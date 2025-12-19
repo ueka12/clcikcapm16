@@ -12,9 +12,12 @@ st.set_page_config(
     page_icon="🕹️",
     layout=None)
 
-st.header("Waste Prediction")
+st.header("ระบบทำนายขยะอัญชะลิยะ")
 
 df = pd.read_csv("sustainable_waste_management_dataset_2024.csv")
+
+if st.button("แสดงข้อมูลดิบ🥩"):
+    st.dataframe(df)
 
 # เลือก feature แล้วทำการทำความสะอาดข้อมูล
 selected_features = ["population", "overflow", "is_weekend", "is_holiday", "recycling_campaign", "temp_c", "rain_mm"]
