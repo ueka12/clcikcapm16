@@ -16,23 +16,14 @@ st.header("ระบบทำนายขยะอัญชะลิยะ")
 
 df = pd.read_csv("sustainable_waste_management_dataset_2024.csv")
 
-# 1. Initialize the toggle state in session_state
-if 'show_raw' not in st.session_state:
-    st.session_state.show_raw = False
+col1, col2 = st.columns(2)
+with col1:
+    population = st.number_input("ประชากรเมืง", 100, 50000000, 100000, 1000)
+    selection = st.pills("", ["ล้น", "วันหยุดสุดสัปดาห์", "วันหุดเทสกาน", "รนนรงลดขยะ"], selection_mode="multi")
+    temp = st.slider("อุนหพูม", -100, 50, 1, 30)
+    rain = st.slider("ฝนเท่าไร", 0, 50, 1, 0)
 
-# 2. Define the labels based on the state
-label = "เลิกแสดงข้อมูลดิบ ❌" if st.session_state.show_raw else "แสดงข้อมูลดิบ 🥩"
 
-# 3. Create the toggle button
-if st.button(label):
-    # This flips the state (True becomes False, False becomes True)
-    st.session_state.show_raw = not st.session_state.show_raw
-    st.rerun() # Refresh immediately to update the button label
-
-# 4. Display the data if the state is True
-if st.session_state.show_raw:
-    # Assuming 'df' is your dataframe
-    st.dataframe(df)
 
 # เลือก feature แล้วทำการทำความสะอาดข้อมูล
 selected_features = ["population", "overflow", "is_weekend", "is_holiday", "recycling_campaign", "temp_c", "rain_mm"]
@@ -67,3 +58,21 @@ ax.legend()
 ax.grid(True)
 
 st.pyplot(fig)
+
+# 1. Initialize the toggle state in session_state
+if 'show_raw' not in st.session_state:
+    st.session_state.show_raw = False
+
+# 2. Define the labels based on the state
+label = "เลิกแสดงข้อมูลดิบ ❌" if st.session_state.show_raw else "แสดงข้อมูลดิบ 🥩"
+
+# 3. Create the toggle button
+if st.button(label):
+    # This flips the state (True becomes False, False becomes True)
+    st.session_state.show_raw = not st.session_state.show_raw
+    st.rerun() # Refresh immediately to update the button label
+
+# 4. Display the data if the state is True
+if st.session_state.show_raw:
+    # Assuming 'df' is your dataframe
+    st.dataframe(df)
