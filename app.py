@@ -7,23 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 
-st.set_page_config(
-    page_title="Streamlit with ML",
-    page_icon="🕹️",
-    layout=None)
-
-st.header("ระบบทำนายขยะอัญชะลิยะ")
-
 df = pd.read_csv("sustainable_waste_management_dataset_2024.csv")
-
-col1, col2 = st.columns(2)
-with col1:
-    population = st.number_input("ประชากรเมืง", 100, 50000000, 100000, 1000)
-    selection = st.pills("", ["ล้น", "วันหยุดสุดสัปดาห์", "วันหุดเทสกาน", "รนนรงลดขยะ"], selection_mode="multi")
-    temp = st.slider("อุนหพูม", -100, 50, 1, 30)
-    rain = st.slider("ฝนเท่าไร", 0, 50, 1, 0)
-
-
 
 # เลือก feature แล้วทำการทำความสะอาดข้อมูล
 selected_features = ["population", "overflow", "is_weekend", "is_holiday", "recycling_campaign", "temp_c", "rain_mm"]
@@ -47,6 +31,41 @@ Y_pred = model.predict(X_test)
 
 print("MSE: ", mean_squared_error(Y_test, Y_pred))
 print("R squared: ", r2_score(Y_test, Y_pred))
+
+st.set_page_config(
+    page_title="Streamlit with ML",
+    page_icon="🕹️",
+    layout=None)
+
+st.header("ระบบทำนายขยะอัญชะลิยะ")
+
+col1, col2 = st.columns(2)
+with col1:
+    population = st.number_input("ประชากรเมืง", 100, 50000000, 100000, 100000)
+    selection = st.pills("", ["ล้น", "วันหยุดสุดสัปดาห์", "วันหุดเทสกาน", "รนนรงลดขยะ"], selection_mode="multi")
+    temp = st.slider("อุนหพูม", -100, 50, 30)
+    rain = st.slider("ฝนเท่าไร", 0, 50, 0)
+
+    # 1. Define all possible categories (must match the order used during training)
+    all_categories = ["ล้น", "วันหยุดสุดสัปดาห์", "วันหุดเทสกาน", "รนนรงลดขยะ"]
+
+    # 2. Convert the 'selection' list into binary (0 or 1)
+    # This creates a 1 if the item was selected, and 0 if it wasn't
+    selection_encoded = [1 if cat in selection else 0 for cat in all_categories]
+
+    # 3. Combine everything into one flat list of numbers
+    # Order: Population, 4 category columns, Temperature, Rain
+    final_features = [population] + selection_encoded + [temp, rain]
+
+    # 4. Convert to 2D array (Scikit-learn requires this shape)
+    # It transforms [x, y, z] into [[x, y, z]]
+    input_for_prediction = np.array(final_features).reshape(1, -1)
+
+with col2:
+    if st.button("ถัมไนย์"):
+        result = model.predict(input_for_prediction )
+        st.write(result)
+        
 
 fig, ax = plt.subplots(figsize=(10, 6))
 ax.scatter(Y_test, Y_pred, alpha=0.7)
