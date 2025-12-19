@@ -16,7 +16,22 @@ st.header("ระบบทำนายขยะอัญชะลิยะ")
 
 df = pd.read_csv("sustainable_waste_management_dataset_2024.csv")
 
-if st.button("แสดงข้อมูลดิบ🥩"):
+# 1. Initialize the toggle state in session_state
+if 'show_raw' not in st.session_state:
+    st.session_state.show_raw = False
+
+# 2. Define the labels based on the state
+label = "เลิกแสดงข้อมูลดิบ ❌" if st.session_state.show_raw else "แสดงข้อมูลดิบ 🥩"
+
+# 3. Create the toggle button
+if st.button(label):
+    # This flips the state (True becomes False, False becomes True)
+    st.session_state.show_raw = not st.session_state.show_raw
+    st.rerun() # Refresh immediately to update the button label
+
+# 4. Display the data if the state is True
+if st.session_state.show_raw:
+    # Assuming 'df' is your dataframe
     st.dataframe(df)
 
 # เลือก feature แล้วทำการทำความสะอาดข้อมูล
